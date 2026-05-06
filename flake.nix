@@ -25,7 +25,7 @@
           environment.shellAliases.nixos-rebuild = ''echo "nixos-rebuild is disabled on 'build-vm' VMs."'';
           users.users.user = {
             isNormalUser = true;
-            initialHashedPassword = "$y$j9T$Cnmeqk6vSrqCaMy6h2KHq0$rENTiHBIrUoACiGaoty3BZEJrkytOucpdzBJbtaL6Q0";
+            #initialHashedPassword = "$y$j9T$Cnmeqk6vSrqCaMy6h2KHq0$rENTiHBIrUoACiGaoty3BZEJrkytOucpdzBJbtaL6Q0";
             extraGroups = [ "wheel" ];
           };
           security.sudo.extraRules = [
