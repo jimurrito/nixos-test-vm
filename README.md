@@ -56,7 +56,7 @@ nixosConfigurations =  {
 nix run .#nixosConfigurations.test-vm.config.system.build.vm
 ```
 
-The VM runs headless and attaches directly to your terminal. Your session will be held until the VM is shut down — use `shtd` inside the VM or `Ctrl+A X` to exit QEMU.
+The VM runs headless and attaches directly to your terminal. Your session will be held until the VM is shut down — use `qqq` inside the VM or `Ctrl+A X` to exit QEMU.
 
 ## License
 

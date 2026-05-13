@@ -44,7 +44,7 @@
           ];
           programs.bash.shellInit = "export HISTCONTROL=ignoreboth:erasedups";
           services.getty.autologinUser = "user";
-          environment.shellAliases.shtd = "sudo shutdown 0 0 0";
+          environment.shellAliases.qqq = "sudo shutdown 0 0 0";
           # VM specs
           virtualisation.vmVariant.virtualisation = {
             memorySize = 2048;
