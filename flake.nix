@@ -11,6 +11,9 @@
       # baseline config for VM
       baselineConfig.imports = ./baseline-config.nix;
       #
+      # Cli alias
+      cli.imports = ./cli.nix;
+      #
       # test vm for testing the test vm
       nixosConfigurations = {
         test-vm = nixpkgs.lib.nixosSystem {

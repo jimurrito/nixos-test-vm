@@ -10,6 +10,7 @@ A minimal NixOS flake that provides a reusable baseline VM configuration for tes
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [Running the VM](#running-the-vm)
+- [CLI Module](#cli-module)
 - [Flake Reference](#flake-reference)
 - [License](#license)
 
@@ -93,13 +94,63 @@ nix run .#nixosConfigurations.test-vm.config.system.build.vm
 
 The VM runs headless and attaches directly to your terminal. Your session is held until the VM shuts down. Use `qqq` inside the VM or `Ctrl+A X` to exit QEMU.
 
+## CLI Module
+
+The `cli` output is an optional NixOS module that installs a `nixos-test-vm` shell alias. It builds and launches a `#test-vm` nixosConfiguration from any flake path or URL.
+
+### Adding the CLI to your system
+
+```nix
+inputs = {
+  nixpkgs.url = "github:NixOS/nixpkgs/nixos-<version>";
+  test-vm = {
+    url  = "github:jimurrito/nixos-test-vm";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+};
+
+outputs = { nixpkgs, test-vm, ... }: {
+  nixosConfigurations = {
+    my-machine = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        test-vm.cli
+        { <your-config-here> }
+      ];
+    };
+  };
+};
+```
+
+### Usage
+
+```bash
+# Build and run the test-vm from a local flake
+nixos-test-vm /path/to/your/flake
+
+# Build and run from the current directory (default)
+nixos-test-vm
+```
+
+| Argument     | Required | Description                                                          |
+| ------------ | -------- | -------------------------------------------------------------------- |
+| `<flake-path>` | No     | Path or URL to the flake containing a `#test-vm` nixosConfiguration. Defaults to `.` (current directory). |
+
+### Real Example
+
+```bash
+# From the root of a flake that uses baselineConfig
+nixos-test-vm ~/projects/my-module
+```
+
 ## Flake Reference
 
 ### Available attributes
 
-| Output           | Type         | Description                                                        |
-| ---------------- | ------------ | ------------------------------------------------------------------ |
-| `baselineConfig` | NixOS module | Baseline VM configuration to include in your `nixosConfigurations` |
+| Output           | Type         | Description                                                                        |
+| ---------------- | ------------ | ---------------------------------------------------------------------------------- |
+| `baselineConfig` | NixOS module | Baseline VM configuration to include in your `nixosConfigurations`                 |
+| `cli`            | NixOS module | Installs the `nixos-test-vm` shell alias for building and launching test VMs       |
 
 ### baselineConfig Settings
 
