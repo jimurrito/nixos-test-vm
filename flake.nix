@@ -9,10 +9,10 @@
     {
       #
       # baseline config for VM
-      baselineConfig.imports = ./baseline-config.nix;
+      baselineConfig.imports = [ ./baseline-config.nix ];
       #
       # Cli alias
-      cli.imports = ./cli.nix;
+      cli.imports = [ ./cli.nix ];
       #
       # test vm for testing the test vm
       nixosConfigurations = {
@@ -20,6 +20,7 @@
           system = "x86_64-linux";
           modules = [
             self.baselineConfig
+            self.cli
           ];
         };
       };
