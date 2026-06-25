@@ -2,6 +2,16 @@
   Baseline config for the test-vm.
   Enough config to deploy a test VM.
 */
+{
+  hostName ? "test-vm",
+  user ? "user",
+  memorySize ? 2048,
+  cores ? 2,
+  graphics ? false,
+  diskSize ? 20480,
+  timeZone ? "America/Chicago",
+  additionalPackages ? [ ],
+}:
 { config, pkgs, ... }:
 {
   # Nix configs
@@ -12,16 +22,16 @@
     "flakes"
   ];
   # general OS configs
-  networking.hostName = "test-vm";
-  time.timeZone = "America/Chicago";
+  networking.hostName = hostName;
+  time.timeZone = timeZone;
   environment.shellAliases.nixos-rebuild = ''echo "nixos-rebuild is disabled on 'build-vm' VMs."'';
-  users.users.user = {
+  users.users.${user} = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
   security.sudo.extraRules = [
     {
-      users = [ "user" ];
+      users = [ user ];
       commands = [
         {
           command = "ALL";
@@ -34,18 +44,19 @@
     }
   ];
   programs.bash.shellInit = "export HISTCONTROL=ignoreboth:erasedups";
-  services.getty.autologinUser = "user";
+  services.getty.autologinUser = user;
   # quick quit alias
   environment.shellAliases.qqq = "sudo shutdown 0 0 0";
   # VM specs
   virtualisation.vmVariant.virtualisation = {
-    memorySize = 2048;
-    cores = 2;
-    graphics = false;
-    diskSize = 20480;
+    memorySize = memorySize;
+    cores = cores;
+    graphics = graphics;
+    diskSize = diskSize;
   };
   # default packages
-  environment.systemPackages = with pkgs; [
-    fastfetch
-  ];
+  environment.systemPackages = [
+    pkgs.fastfetch
+  ]
+  ++ additionalPackages;
 }

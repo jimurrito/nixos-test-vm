@@ -9,7 +9,7 @@
     {
       #
       # baseline config for VM
-      baselineConfig.imports = [ ./baseline-config.nix ];
+      baselineConfig = ./baseline-config.nix;
       #
       # Cli alias
       cli.imports = [ ./cli.nix ];
@@ -19,7 +19,7 @@
         test-vm = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            self.baselineConfig
+            (import self.baselineConfig {})
             self.cli
           ];
         };

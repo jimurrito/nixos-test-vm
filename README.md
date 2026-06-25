@@ -33,14 +33,17 @@ inputs = {
 };
 ```
 
-Then pull `test-vm.baselineConfig` into your `nixosConfigurations` alongside the module under test:
+Then pull `test-vm.baselineConfig` into your `nixosConfigurations` alongside the module under test. Because `baselineConfig` is a function that accepts options, you must `import` it — pass `{}` to use all defaults, or supply any options you want to override:
 
 ```nix
 nixosConfigurations = {
   test-vm = nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
-      test-vm.baselineConfig
+      (import test-vm.baselineConfig {
+        hostName = "<hostname>";
+        memorySize = <mb>;
+      })
       # module under test
       { <your-config-here> }
     ];
@@ -67,7 +70,7 @@ Testing an nginx service:
       test-vm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          test-vm.baselineConfig
+          (import test-vm.baselineConfig {})
           {
             services.nginx = {
               enable = true;
@@ -152,21 +155,33 @@ nixos-test-vm ~/projects/my-module
 | `baselineConfig` | NixOS module | Baseline VM configuration to include in your `nixosConfigurations`                 |
 | `cli`            | NixOS module | Installs the `nixos-test-vm` shell alias for building and launching test VMs       |
 
-### baselineConfig Settings
+### baselineConfig Options
 
-As of now these are non-configurable.
+All options are optional. Pass them as an attribute set when importing `baselineConfig`. Omitted options use their defaults.
 
-| Setting                        | Value              | Description                       |
-| ------------------------------ | ------------------ | --------------------------------- |
-| `virtualisation.memorySize`    | `2048` MB          | VM RAM                            |
-| `virtualisation.cores`         | `2`                | vCPU count                        |
-| `virtualisation.diskSize`      | `20480` MB (20 GB) | VM disk size                      |
-| `virtualisation.graphics`      | `false`            | Headless — no display output      |
-| `services.getty.autologinUser` | `user`             | Auto-login user on boot           |
-| `security.sudo`                | passwordless       | `user` has full passwordless sudo |
-| `networking.hostName`          | `test-vm`          | Default hostname                  |
-| `time.timeZone`                | `America/Chicago`  | System timezone                   |
-| `environment.systemPackages`   | `fastfetch`        | Pre-installed packages            |
+```nix
+(import test-vm.baselineConfig {
+  hostName          = "my-vm";
+  user              = "tester";
+  memorySize        = 4096;
+  cores             = 4;
+  graphics          = false;
+  diskSize          = 40960;
+  timeZone          = "America/New_York";
+  additionalPackages = [ pkgs.curl pkgs.git ];
+})
+```
+
+| Option               | Type            | Default            | Description                                              |
+| -------------------- | --------------- | ------------------ | -------------------------------------------------------- |
+| `hostName`           | string          | `"test-vm"`        | VM hostname                                              |
+| `user`               | string          | `"user"`           | Auto-login user; granted full passwordless sudo          |
+| `memorySize`         | int (MB)        | `2048`             | VM RAM in megabytes                                      |
+| `cores`              | int             | `2`                | vCPU count                                               |
+| `graphics`           | bool            | `false`            | Enable display output (headless when false)              |
+| `diskSize`           | int (MB)        | `20480`            | VM disk size in megabytes (20 GB)                        |
+| `timeZone`           | string          | `"America/Chicago"`| System timezone (TZ database name)                       |
+| `additionalPackages` | list of package | `[]`               | Extra packages added alongside the default (`fastfetch`) |
 
 ## License
 
