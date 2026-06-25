@@ -49,10 +49,12 @@
   environment.shellAliases.qqq = "sudo shutdown 0 0 0";
   # VM specs
   virtualisation.vmVariant.virtualisation = {
-    memorySize = memorySize;
-    cores = cores;
-    graphics = graphics;
-    diskSize = diskSize;
+    inherit
+      cores
+      memorySize
+      diskSize
+      graphics
+      ;
   };
   # default packages
   environment.systemPackages = [
