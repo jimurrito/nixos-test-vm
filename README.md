@@ -99,7 +99,7 @@ The VM runs headless and attaches directly to your terminal. Your session is hel
 
 ## CLI Module
 
-The `cli` output is an optional NixOS module that installs a `nixos-test-vm` shell alias. It builds and launches a `#test-vm` nixosConfiguration from any flake path or URL.
+The `cli` output is an optional NixOS module that installs a `nixos-test-vm` shell alias. It accepts a full flake reference (path or URL including the `#<nixosConfiguration>` fragment) and builds and launches the specified VM.
 
 ### Adding the CLI to your system
 
@@ -129,7 +129,7 @@ outputs = { nixpkgs, test-vm, ... }: {
 
 ```bash
 # Build and run the test-vm from a local flake
-nixos-test-vm /path/to/your/flake
+nixos-test-vm /path/to/your/flake#test-vm
 
 # Build and run from the current directory (default)
 nixos-test-vm
@@ -137,13 +137,13 @@ nixos-test-vm
 
 | Argument     | Required | Description                                                          |
 | ------------ | -------- | -------------------------------------------------------------------- |
-| `<flake-path>` | No     | Path or URL to the flake containing a `#test-vm` nixosConfiguration. Defaults to `.` (current directory). |
+| `<flake-ref>` | No      | Full flake reference (path or URL with `#<nixosConfiguration>` fragment) to build and run. Defaults to `.#test-vm`. |
 
 ### Real Example
 
 ```bash
 # From the root of a flake that uses baselineConfig
-nixos-test-vm ~/projects/my-module
+nixos-test-vm ~/projects/my-module#test-vm
 ```
 
 ## Flake Reference
