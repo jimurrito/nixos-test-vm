@@ -19,8 +19,22 @@
         test-vm = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            (import self.baselineConfig {})
+            (import self.baselineConfig { })
             self.cli
+            # nginx server for testing
+            {
+              services.nginx = {
+                enable = true;
+                virtualHosts."localhost" = {
+                  forceSSL = false;
+                  enableACME = false;
+                  locations."/".extraConfig = ''
+                    return 200 "Nginx is running successfully!";
+                    add_header Content-Type text/plain;
+                  '';
+                };
+              };
+            }
           ];
         };
       };
