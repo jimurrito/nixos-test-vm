@@ -25,7 +25,7 @@
             {
               services.nginx = {
                 enable = true;
-                virtualHosts."localhost" = {
+                virtualHosts."_" = {
                   forceSSL = false;
                   enableACME = false;
                   locations."/".extraConfig = ''
